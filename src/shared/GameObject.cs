@@ -12,6 +12,8 @@ namespace ConsoleMultiplayer.Shared {
     string view;
     ConsoleColor color;
 
+    public int ID => id;
+
     public GameObject(int id, int x, int y, string view, ConsoleColor color = ConsoleColor.White) {
       this.id = id;
       this.x = x;
