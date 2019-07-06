@@ -7,6 +7,7 @@ namespace ConsoleMultiplayer.Shared.Commands {
     move,
   }
   abstract class Command : NetworkEntity {
+    protected abstract void Serialize(BinaryWriter bw);
     public abstract CommandType type { get; }
 
     public static Command Parse(BinaryReader br) {
@@ -16,6 +17,10 @@ namespace ConsoleMultiplayer.Shared.Commands {
         case CommandType.move: return new Move(br);
         default: throw new Exception($"Unknown command type: {type}");
       }
+    }
+    public override void Encode(BinaryWriter bw) {
+      bw.Write((short)type);
+      Serialize(bw);
     }
   }
 }

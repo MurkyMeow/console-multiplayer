@@ -11,7 +11,7 @@ namespace ConsoleMultiplayer.Shared.Commands {
     public Join(BinaryReader br) {
       sprite = br.ReadString();
     }
-    public override void Encode(BinaryWriter bw) {
+    protected override void Serialize(BinaryWriter bw) {
       bw.Write(sprite);
     }
   }
