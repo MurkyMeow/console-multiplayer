@@ -45,10 +45,7 @@ namespace ConsoleMultiplayer.Server {
       Broadcast(newPlayer.Encode());
       // Send existing players
       foreach (var (_, player) in players) {
-        if (player != newPlayer) {
-          var data = player.Encode();
-          Send(sender, player.Encode());
-        }
+        if (player != newPlayer) Send(sender, player.Encode());
       }
     }
     public void MovePlayer(Command command, IPEndPoint sender) {
