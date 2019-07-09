@@ -13,15 +13,15 @@ namespace ConsoleMultiplayer.Client {
     GameObject player;
     Dictionary<int, GameObject> objects = new Dictionary<int, GameObject>();
 
-    public void Connect(string host, int port) {
+    public Task Connect(string host, int port, string view) {
       udp = new UdpClient();
       udp.Connect(host, port);
       cmd = new Cmd(udp);
+      return cmd.Send(new Join(view));
     }
     public Task Run() =>
       Task.WhenAll(new Task[] { Listen(), RunInputLoop() });
     async Task Listen() {
-      await cmd.Send(new Join("#"));
       while (true) {
         var res = await udp.ReceiveAsync();
         var br = new BinaryReader(new MemoryStream(res.Buffer));

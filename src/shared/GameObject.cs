@@ -50,7 +50,7 @@ namespace ConsoleMultiplayer.Shared {
     }
     public void Erase() {
       Console.SetCursorPosition(x, y);
-      Console.Write(' ');
+      Console.Write(new String(' ', view.Length));
     }
   }
 }
