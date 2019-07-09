@@ -2,7 +2,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using ConsoleMultiplayer.Shared.Commands;
 
-namespace ConsoleMultiplayer.Shared {
+namespace ConsoleMultiplayer.Client {
   class Cmd {
     UdpClient udp;
 
