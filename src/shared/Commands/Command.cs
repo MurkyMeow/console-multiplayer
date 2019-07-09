@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 
 namespace ConsoleMultiplayer.Shared.Commands {
@@ -9,15 +8,6 @@ namespace ConsoleMultiplayer.Shared.Commands {
   abstract class Command : NetworkEntity {
     protected abstract void Serialize(BinaryWriter bw);
     public abstract CommandType type { get; }
-
-    public static Command Parse(BinaryReader br) {
-      var type = (CommandType)br.ReadInt16();
-      switch (type) {
-        case CommandType.join: return new Join(br);
-        case CommandType.move: return new Move(br);
-        default: throw new Exception($"Unknown command type: {type}");
-      }
-    }
     public override void Encode(BinaryWriter bw) {
       bw.Write((short)type);
       Serialize(bw);

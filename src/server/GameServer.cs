@@ -26,15 +26,14 @@ namespace ConsoleMultiplayer.Server {
       while(true) {
         var res = await udp.ReceiveAsync();
         var br = new BinaryReader(new MemoryStream(res.Buffer));
-        var command = Command.Parse(br);
-        switch (command.type) {
-          case CommandType.join: AddPlayer(command, res.RemoteEndPoint); break;
-          case CommandType.move: MovePlayer(command, res.RemoteEndPoint); break;
+        var type = (CommandType)br.ReadInt16();
+        switch (type) {
+          case CommandType.join: AddPlayer(new Join(br), res.RemoteEndPoint); break;
+          case CommandType.move: MovePlayer(new Move(br), res.RemoteEndPoint); break;
         }
       }
     }
-    void AddPlayer(Command command, IPEndPoint sender) {
-      var join = (Join)command;
+    void AddPlayer(Join join, IPEndPoint sender) {
       var newPlayer = new GameObject(
         id: players.Count,
         x: rand.Next(0, 10),
@@ -48,8 +47,7 @@ namespace ConsoleMultiplayer.Server {
         if (player != newPlayer) Send(sender, player.Encode());
       }
     }
-    public void MovePlayer(Command command, IPEndPoint sender) {
-      var move = (Move)command;
+    public void MovePlayer(Move move, IPEndPoint sender) {
       var player = players[sender];
       player.Move(move.dir);
       Broadcast(player.Encode());
