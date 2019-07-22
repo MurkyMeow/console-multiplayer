@@ -1,18 +1,10 @@
-using System.IO;
-
 namespace ConsoleMultiplayer.Shared.Commands {
   class Move : Command {
-    public override CommandType type => CommandType.move;
-    public Direction dir;
+    [NetworkVar] public Direction dir;
 
-    public Move(Direction dir) {
+    public Move() : base(CommandType.move) {}
+    public Move(Direction dir) : base(CommandType.move) {
       this.dir = dir;
-    }
-    public Move(BinaryReader br) {
-      dir = (Direction)br.ReadInt16();
-    }
-    protected override void Serialize(BinaryWriter bw) {
-      bw.Write((short)dir);
     }
   }
 }

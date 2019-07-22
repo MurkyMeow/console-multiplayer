@@ -23,13 +23,18 @@ namespace ConsoleMultiplayer.Server {
 
     public async Task Listen(int port) {
       udp = new UdpClient(port);
-      while(true) {
+      while (true) {
         var res = await udp.ReceiveAsync();
         var br = new BinaryReader(new MemoryStream(res.Buffer));
         var type = (CommandType)br.ReadInt16();
         switch (type) {
-          case CommandType.join: AddPlayer(new Join(br), res.RemoteEndPoint); break;
-          case CommandType.move: MovePlayer(new Move(br), res.RemoteEndPoint); break;
+          case CommandType.join:
+            AddPlayer(NetworkEntity<Join>.Decode(br), res.RemoteEndPoint);
+            break;
+          case CommandType.move:
+            MovePlayer(NetworkEntity<Move>.Decode(br), res.RemoteEndPoint);
+            break;
+          default: throw new Exception($"Unknown command type: {type}");
         }
       }
     }
@@ -41,16 +46,18 @@ namespace ConsoleMultiplayer.Server {
         view: join.sprite
       );
       players.Add(sender, newPlayer);
-      Broadcast(newPlayer.Encode());
+      Broadcast(NetworkEntity<GameObject>.Encode(newPlayer));
       // Send existing players
       foreach (var (_, player) in players) {
-        if (player != newPlayer) Send(sender, player.Encode());
+        if (player != newPlayer) {
+          Send(sender, NetworkEntity<GameObject>.Encode(player));
+        }
       }
     }
     public void MovePlayer(Move move, IPEndPoint sender) {
       var player = players[sender];
       player.Move(move.dir);
-      Broadcast(player.Encode());
+      Broadcast(NetworkEntity<GameObject>.Encode(player));
     }
   }
 }
