@@ -8,7 +8,6 @@ using ConsoleMultiplayer.Shared.Commands;
 
 namespace ConsoleMultiplayer.Client {
   class GameClient {
-    Cmd cmd;
     UdpClient udp;
     GameObject player;
     Dictionary<int, GameObject> objects = new Dictionary<int, GameObject>();

@@ -1,9 +1,10 @@
 namespace ConsoleMultiplayer.Shared.Commands {
-  class Move : Command {
+  [NetworkType(NetType.commandMove)]
+  class Move : NetworkEntity<Move> {
     [NetworkVar] public Direction dir;
 
-    public Move() : base(CommandType.move) {}
-    public Move(Direction dir) : base(CommandType.move) {
+    public Move() {}
+    public Move(Direction dir) {
       this.dir = dir;
     }
   }

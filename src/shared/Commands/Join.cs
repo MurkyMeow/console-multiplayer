@@ -1,9 +1,10 @@
 namespace ConsoleMultiplayer.Shared.Commands {
-  class Join : Command {
+  [NetworkType(NetType.commandJoin)]
+  class Join : NetworkEntity<Join> {
     [NetworkVar] public string sprite;
 
-    public Join() : base(CommandType.join) {}
-    public Join(string sprite) : base(CommandType.join) {
+    public Join() {}
+    public Join(string sprite) {
       this.sprite = sprite;
     }
   }

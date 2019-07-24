@@ -26,15 +26,15 @@ namespace ConsoleMultiplayer.Server {
       while (true) {
         var res = await udp.ReceiveAsync();
         var br = new BinaryReader(new MemoryStream(res.Buffer));
-        var type = (CommandType)br.ReadInt16();
+        var type = (NetType)br.ReadInt16();
         switch (type) {
-          case CommandType.join:
+          case NetType.commandJoin:
             AddPlayer(NetworkEntity<Join>.Decode(br), res.RemoteEndPoint);
             break;
-          case CommandType.move:
+          case NetType.commandMove:
             MovePlayer(NetworkEntity<Move>.Decode(br), res.RemoteEndPoint);
             break;
-          default: throw new Exception($"Unknown command type: {type}");
+          default: throw new Exception($"Unsupported command type: {type}");
         }
       }
     }
