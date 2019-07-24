@@ -4,13 +4,13 @@ namespace ConsoleMultiplayer.Shared {
   enum Direction {
     up, down, left, right,
   }
-  [NetworkType(NetType.gameobj)]
-  class GameObject : NetworkEntity<GameObject> {
-    [NetworkVar] int id;
-    [NetworkVar] int x;
-    [NetworkVar] int y;
-    [NetworkVar] string view;
-    [NetworkVar] ConsoleColor color;
+  [NetHeader(Header.commandJoin)]
+  class GameObject : NetEntity<GameObject> {
+    [NetVar] int id;
+    [NetVar] int x;
+    [NetVar] int y;
+    [NetVar] string view;
+    [NetVar] ConsoleColor color;
 
     public int ID => id;
 

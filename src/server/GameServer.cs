@@ -26,15 +26,15 @@ namespace ConsoleMultiplayer.Server {
       while (true) {
         var res = await udp.ReceiveAsync();
         var br = new BinaryReader(new MemoryStream(res.Buffer));
-        var type = (NetType)br.ReadInt16();
-        switch (type) {
-          case NetType.commandJoin:
-            AddPlayer(NetworkEntity<Join>.Decode(br), res.RemoteEndPoint);
+        var header = (Header)br.ReadInt16();
+        switch (header) {
+          case Header.commandJoin:
+            AddPlayer(NetEntity<Join>.Decode(br), res.RemoteEndPoint);
             break;
-          case NetType.commandMove:
-            MovePlayer(NetworkEntity<Move>.Decode(br), res.RemoteEndPoint);
+          case Header.commandMove:
+            MovePlayer(NetEntity<Move>.Decode(br), res.RemoteEndPoint);
             break;
-          default: throw new Exception($"Unsupported command type: {type}");
+          default: throw new Exception($"Unsupported header: {header}");
         }
       }
     }
@@ -46,18 +46,18 @@ namespace ConsoleMultiplayer.Server {
         view: join.sprite
       );
       players.Add(sender, newPlayer);
-      Broadcast(NetworkEntity<GameObject>.Encode(newPlayer));
+      Broadcast(NetEntity<GameObject>.Encode(newPlayer));
       // Send existing players
       foreach (var (_, player) in players) {
         if (player != newPlayer) {
-          Send(sender, NetworkEntity<GameObject>.Encode(player));
+          Send(sender, NetEntity<GameObject>.Encode(player));
         }
       }
     }
     public void MovePlayer(Move move, IPEndPoint sender) {
       var player = players[sender];
       player.Move(move.dir);
-      Broadcast(NetworkEntity<GameObject>.Encode(player));
+      Broadcast(NetEntity<GameObject>.Encode(player));
     }
   }
 }

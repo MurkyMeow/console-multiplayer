@@ -15,7 +15,7 @@ namespace ConsoleMultiplayer.Client {
     public Task Connect(string host, int port, string view) {
       udp = new UdpClient();
       udp.Connect(host, port);
-      var bytes = NetworkEntity<Join>.Encode(new Join(view));
+      var bytes = NetEntity<Join>.Encode(new Join(view));
       return udp.SendAsync(bytes, bytes.Length);
     }
     public Task Run() =>
@@ -24,7 +24,7 @@ namespace ConsoleMultiplayer.Client {
       while (true) {
         var res = await udp.ReceiveAsync();
         var br = new BinaryReader(new MemoryStream(res.Buffer));
-        var obj = NetworkEntity<GameObject>.Decode(br);
+        var obj = NetEntity<GameObject>.Decode(br);
         if (player == null) {
           player = obj;
         } else if (objects.ContainsKey(obj.ID)) {
@@ -44,7 +44,7 @@ namespace ConsoleMultiplayer.Client {
         player.Erase();
         player.Move(dir);
         player.Draw();
-        var bytes = NetworkEntity<Move>.Encode(new Move(dir));
+        var bytes = NetEntity<Move>.Encode(new Move(dir));
         await udp.SendAsync(bytes, bytes.Length);
       }
     }
