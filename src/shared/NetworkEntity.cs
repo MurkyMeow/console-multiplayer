@@ -14,10 +14,9 @@ namespace ConsoleMultiplayer.Shared {
     public readonly Header header;
     public NetHeader(Header header) => this.header = header;
   }
+  delegate void Encoder(object obj, BinaryWriter bw);
+  delegate void Decoder(object obj, BinaryReader br);
   abstract class NetEntity<T> {
-    delegate void Encoder(T obj, BinaryWriter bw);
-    delegate void Decoder(T obj, BinaryReader br);
-
     static readonly Header header;
     static readonly List<(Encoder, Decoder)> serializers = new List<(Encoder, Decoder)>();
 
@@ -50,18 +49,18 @@ namespace ConsoleMultiplayer.Shared {
         }
       }
     }
-    public static byte[] Encode(T obj) {
-      var ms = new MemoryStream();
-      var bw = new BinaryWriter(ms);
-      bw.Write((byte)header);
-      foreach (var (encode, _) in serializers) encode(obj, bw);
-      return ms.ToArray();
-    }
     public static T Decode(BinaryReader br) {
       br.BaseStream.Position = 1; // skip the 1-byte header
       var obj = (T)System.Activator.CreateInstance(typeof(T));
       foreach (var (_, decode) in serializers) decode(obj, br);
       return obj;
+    }
+    public byte[] Encode() {
+      var ms = new MemoryStream();
+      var bw = new BinaryWriter(ms);
+      bw.Write((byte)header);
+      foreach (var (encode, _) in serializers) encode(this, bw);
+      return ms.ToArray();
     }
   }
 }

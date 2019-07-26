@@ -15,7 +15,7 @@ namespace ConsoleMultiplayer.Client {
     public Task Connect(string host, int port, string view) {
       udp = new UdpClient();
       udp.Connect(host, port);
-      var bytes = NetEntity<Join>.Encode(new Join(view));
+      var bytes = new Join(view).Encode();
       return udp.SendAsync(bytes, bytes.Length);
     }
     public Task Run() =>
@@ -44,7 +44,7 @@ namespace ConsoleMultiplayer.Client {
         Canvas.Erase(player);
         player.Move(dir);
         Canvas.Draw(player);
-        var bytes = NetEntity<Move>.Encode(new Move(dir));
+        var bytes = new Move(dir).Encode();
         await udp.SendAsync(bytes, bytes.Length);
       }
     }

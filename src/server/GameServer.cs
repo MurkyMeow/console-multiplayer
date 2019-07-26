@@ -46,18 +46,18 @@ namespace ConsoleMultiplayer.Server {
         view: join.sprite
       );
       players.Add(sender, newPlayer);
-      Broadcast(NetEntity<GameObject>.Encode(newPlayer));
+      Broadcast(newPlayer.Encode());
       // Send existing players
       foreach (var (_, player) in players) {
         if (player != newPlayer) {
-          Send(sender, NetEntity<GameObject>.Encode(player));
+          Send(sender, player.Encode());
         }
       }
     }
     public void MovePlayer(Move move, IPEndPoint sender) {
       var player = players[sender];
       player.Move(move.dir);
-      Broadcast(NetEntity<GameObject>.Encode(player));
+      Broadcast(player.Encode());
     }
   }
 }
