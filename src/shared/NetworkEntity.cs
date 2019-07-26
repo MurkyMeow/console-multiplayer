@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Collections.Generic;
 
 namespace ConsoleMultiplayer.Shared {
-  enum Header {
+  enum Header : byte {
     gameobj,
     commandJoin,
     commandMove,
@@ -53,14 +53,12 @@ namespace ConsoleMultiplayer.Shared {
     public static byte[] Encode(T obj) {
       var ms = new MemoryStream();
       var bw = new BinaryWriter(ms);
-      bw.Write((short)header);
+      bw.Write((byte)header);
       foreach (var (encode, _) in serializers) encode(obj, bw);
       return ms.ToArray();
     }
     public static T Decode(BinaryReader br) {
-      if (br.BaseStream.Position == 0) { // the header havent been read yet
-        br.ReadInt16();
-      }
+      br.BaseStream.Position = 1; // skip the 1-byte header
       var obj = (T)System.Activator.CreateInstance(typeof(T));
       foreach (var (_, decode) in serializers) decode(obj, br);
       return obj;

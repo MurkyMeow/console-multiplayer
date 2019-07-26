@@ -26,7 +26,7 @@ namespace ConsoleMultiplayer.Server {
       while (true) {
         var res = await udp.ReceiveAsync();
         var br = new BinaryReader(new MemoryStream(res.Buffer));
-        var header = (Header)br.ReadInt16();
+        var header = (Header)br.ReadByte();
         switch (header) {
           case Header.commandJoin:
             AddPlayer(NetEntity<Join>.Decode(br), res.RemoteEndPoint);
