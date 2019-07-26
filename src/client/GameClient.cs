@@ -28,12 +28,12 @@ namespace ConsoleMultiplayer.Client {
         if (player == null) {
           player = obj;
         } else if (objects.ContainsKey(obj.ID)) {
-          objects[obj.ID].Erase();
+          Canvas.Erase(objects[obj.ID]);
           objects[obj.ID] = obj;
         } else {
           objects.Add(obj.ID, obj);
         }
-        obj.Draw();
+        Canvas.Draw(obj);
       }
     }
     async Task RunInputLoop() {
@@ -41,9 +41,9 @@ namespace ConsoleMultiplayer.Client {
         var maybeDir = GetDir();
         if (maybeDir == null) continue;
         var dir = (Direction)maybeDir;
-        player.Erase();
+        Canvas.Erase(player);
         player.Move(dir);
-        player.Draw();
+        Canvas.Draw(player);
         var bytes = NetEntity<Move>.Encode(new Move(dir));
         await udp.SendAsync(bytes, bytes.Length);
       }

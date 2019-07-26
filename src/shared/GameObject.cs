@@ -5,7 +5,7 @@ namespace ConsoleMultiplayer.Shared {
     up, down, left, right,
   }
   [NetHeader(Header.commandJoin)]
-  class GameObject : NetEntity<GameObject> {
+  class GameObject : NetEntity<GameObject>, IDrawable {
     [NetVar] int id;
     [NetVar] int x;
     [NetVar] int y;
@@ -13,6 +13,9 @@ namespace ConsoleMultiplayer.Shared {
     [NetVar] ConsoleColor color;
 
     public int ID => id;
+    public (int, int) Pos => (x, y);
+    public string[] Template => view.Split("\\n");
+    public ConsoleColor Color => color;
 
     public GameObject() {}
     public GameObject(int id, int x, int y, string view, ConsoleColor color = ConsoleColor.White) {
@@ -29,15 +32,6 @@ namespace ConsoleMultiplayer.Shared {
         case Direction.down: y++; break;
         case Direction.up: y--; break;
       }
-    }
-    public void Draw() {
-      Console.ForegroundColor = color;
-      Console.SetCursorPosition(x, y);
-      Console.Write(view);
-    }
-    public void Erase() {
-      Console.SetCursorPosition(x, y);
-      Console.Write(new String(' ', view.Length));
     }
   }
 }
