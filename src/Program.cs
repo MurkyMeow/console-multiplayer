@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using ConsoleMultiplayer.Client;
 using ConsoleMultiplayer.Server;
@@ -6,13 +6,12 @@ using ConsoleMultiplayer.Server;
 namespace ConsoleMultiplayer {
   class Program {
     static async Task Main(string[] args) {
-      Console.WriteLine("(h)ost or (c)onnect?");
       var answer = Console.ReadLine();
       var port = 5000;
-      if (answer == "h") {
+      if (args[0] == "h") {
         var server = new GameServer();
         await server.Listen(port);
-      } else if (answer == "c") {
+      } else {
         Console.CursorVisible = false;
         var client = new GameClient();
         Console.WriteLine("What would you like to look like?");
