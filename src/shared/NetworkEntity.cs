@@ -7,7 +7,7 @@ namespace ConsoleMultiplayer.Shared {
   enum Header : byte {
     gameobj,
     commandJoin,
-    commandMove,
+    input,
   }
   class NetVar : Attribute {}
   class NetHeader : Attribute {

@@ -9,8 +9,8 @@ using ConsoleMultiplayer.Shared.Commands;
 namespace ConsoleMultiplayer.Client {
   class GameClient {
     UdpClient udp;
-    GameObject player;
-    Dictionary<int, GameObject> objects = new Dictionary<int, GameObject>();
+    Player player;
+    List<GameObject> objects = new List<GameObject>();
 
     public Task Connect(string host, int port, string view) {
       udp = new UdpClient();
@@ -24,16 +24,20 @@ namespace ConsoleMultiplayer.Client {
       while (true) {
         var res = await udp.ReceiveAsync();
         var br = new BinaryReader(new MemoryStream(res.Buffer));
-        var obj = NetEntity<GameObject>.Decode(br);
         if (player == null) {
-          player = obj;
-        } else if (objects.ContainsKey(obj.ID)) {
-          Canvas.Erase(objects[obj.ID]);
-          objects[obj.ID] = obj;
+          player = NetEntity<Player>.Decode(br);
+          Canvas.Draw(player);
         } else {
-          objects.Add(obj.ID, obj);
+          var obj = NetEntity<GameObject>.Decode(br);
+          var idx = objects.FindIndex(x => x.ID == obj.ID);
+          if (idx == -1) {
+            objects.Add(obj);
+          } else {
+            Canvas.Erase(objects[idx]);
+            objects[idx] = obj;
+          }
+          Canvas.Draw(obj);
         }
-        Canvas.Draw(obj);
       }
     }
     async Task RunInputLoop() {
@@ -44,7 +48,7 @@ namespace ConsoleMultiplayer.Client {
         Canvas.Erase(player);
         player.Move(dir);
         Canvas.Draw(player);
-        var bytes = new Move(dir).Encode();
+        var bytes = new Input(dir).Encode();
         await udp.SendAsync(bytes, bytes.Length);
       }
     }

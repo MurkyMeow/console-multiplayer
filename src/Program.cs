@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using ConsoleMultiplayer.Client;
 using ConsoleMultiplayer.Server;
@@ -6,11 +6,10 @@ using ConsoleMultiplayer.Server;
 namespace ConsoleMultiplayer {
   class Program {
     static async Task Main(string[] args) {
-      var answer = Console.ReadLine();
       var port = 5000;
       if (args[0] == "h") {
         var server = new GameServer();
-        await server.Listen(port);
+        await server.Listen(port, tickrate: 5);
       } else {
         Console.CursorVisible = false;
         var client = new GameClient();

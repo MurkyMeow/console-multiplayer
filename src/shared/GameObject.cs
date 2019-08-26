@@ -6,11 +6,11 @@ namespace ConsoleMultiplayer.Shared {
   }
   [NetHeader(Header.commandJoin)]
   class GameObject : NetEntity<GameObject>, IDrawable {
-    [NetVar] int id;
-    [NetVar] int x;
-    [NetVar] int y;
-    [NetVar] string view;
-    [NetVar] ConsoleColor color;
+    [NetVar] protected int id;
+    [NetVar] protected int x;
+    [NetVar] protected int y;
+    [NetVar] protected string view;
+    [NetVar] protected ConsoleColor color;
 
     public int ID => id;
     public (int, int) Pos => (x, y);
@@ -25,13 +25,6 @@ namespace ConsoleMultiplayer.Shared {
       this.view = view;
       this.color = color;
     }
-    public void Move(Direction dir) {
-      switch (dir) {
-        case Direction.right: x++; break;
-        case Direction.left: x--; break;
-        case Direction.down: y++; break;
-        case Direction.up: y--; break;
-      }
-    }
+    public virtual bool Update() => true;
   }
 }
